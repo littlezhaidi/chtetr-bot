@@ -18,7 +18,7 @@ class Help(commands.Cog):
 [0;30m------------------------------------
 [0;0m/help 指令資訊
 /get-pb 獲取指定使用者的PB
-/sendrp 回傳指定的.ttr檔案
+/saverp 回傳指定的.ttr檔案
 /tasks 定時搜尋某人最近完成的遊戲
 /cancel_tasks 停止執行中的搜尋
 ```""")
@@ -54,7 +54,7 @@ class Help(commands.Cog):
 [1;38m使用例:（可以直接複製來玩玩看）
 [0;0m/sendrp replayid: 0266e1db49f5
 ```""")
-        elif cmd.lower() == "tasks":
+        elif cmd.lower() == "tasks" or cmd.lower() == "cancel_tasks":
             await interaction.response.send_message("""# chillythacat's bot
 ### 查詢並且記錄tetr.io活動的機器人
 ```ansi
@@ -74,6 +74,12 @@ class Help(commands.Cog):
 [0;30m-------------------------------------
 [1;38m使用例:（可以直接複製來玩玩看）
 [0;0m/tasks [0;34musername:[0;0m 5han [0;34mgamemode:[0;0m zenith [0;34mchannel: [0;0mtetriodalao [0;34mhours: [0;0m6 [0;34mispb: [0;0mtrue
+[0;30m-------------------------------------
+[1;38m/cancel_tasks 取消當前文字頻道的任務
+[0;0m引數: 無
+
+[0;0m註：目前來說，所有人都可以停止已存在的搜尋任務
+[0;30m-------------------------------------
 ```""")
         else: await interaction.response.send_message(f'command "{cmd}" is not available now.')
 async def setup(bot):

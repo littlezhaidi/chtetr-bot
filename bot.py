@@ -1,7 +1,7 @@
 import os, asyncio, discord
 from discord.ext import commands
-
-
+from dotenv import load_dotenv
+load_dotenv()
 bot = commands.Bot(command_prefix="^", intents = discord.Intents.all())
 MY_GUILD = discord.Object(id=1325105067787026473)
 
@@ -43,7 +43,7 @@ async def load_extensions():
 async def main():
     async with bot:
         await load_extensions()
-        await bot.start("YOUR_BOT_TOKEN")
+        await bot.start(os.getenv("TOKEN"))
 
 # 確定執行此py檔才會執行
 if __name__ == "__main__":
