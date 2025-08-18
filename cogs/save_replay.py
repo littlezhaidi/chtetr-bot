@@ -1,4 +1,4 @@
-import discord, aiohttp
+import discord
 from discord.ext import commands
 from discord import app_commands
 from utils.fetchdata import save_replay

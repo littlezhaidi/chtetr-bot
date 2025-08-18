@@ -7,7 +7,7 @@ from utils.fetchdata import fetchdata, create_embed
 class Getpb(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-    @app_commands.command(name="get-pb", description="ew")
+    @app_commands.command(name="get-pb", description="獲取玩家PB資訊")
     @app_commands.guilds(discord.Object(id=1325105067787026473))
     async def getpb(self, 
         interaction: discord.Interaction, 
