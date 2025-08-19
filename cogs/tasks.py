@@ -34,6 +34,7 @@ class Tasks(commands.Cog):
         hours: typing.Literal[1, 2, 3, 6, 12, 24],
         ispb: bool = False
     ):
+        username = username.strip().lower()
         replayid = ""
         start_time = datetime.now(timezone.utc)
 

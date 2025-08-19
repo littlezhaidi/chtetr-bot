@@ -14,6 +14,7 @@ class Getpb(commands.Cog):
         username: str, 
         gamemode: typing.Literal["40l", "blitz", "zenith", "zenithex"]
     ):
+        username = username.strip().lower()
         record_url = f"https://ch.tetr.io/api/users/{username}/records/{gamemode}/top?limit=1"
         user_url = f"https://ch.tetr.io/api/users/{username}"
         await interaction.response.defer(thinking=True)
@@ -31,18 +32,16 @@ class Getpb(commands.Cog):
             return
         #print("讀取資料中")
         entries = record_data.get("data").get("entries")
-        embed, file = await create_embed(record_data, user_data, gamemode, username)
+        embed = await create_embed(record_data, user_data, gamemode, username)
+        file = discord.File("combined.png", filename="combined.png")
 
         if gamemode == "zenith":                                   #40l和blitz的extras是空的
             if entries[0].get("extras").get("zenith").get("mods"): #所以要套兩層否則會出錯，暫時沒想到更好的解法 
                 await interaction.followup.send(embed=embed, file=file)
                 return
+            await interaction.followup.send(embed=embed)  #這好醜
         else:
             await interaction.followup.send(embed=embed)  
     
 async def setup(bot):
-    try:
-        await bot.add_cog(Getpb(bot))
-    except Exception as e:
-        print(f"載入 Getpb 時發生錯誤: {e}")
-
+    await bot.add_cog(Getpb(bot))

@@ -3,13 +3,13 @@ import requests
 from io import BytesIO
 
 def merge_icons(mods):
-    base_url = "https://img.littlezhaidi.me/"
+    base_url = "https://img.littlezhaidi.me/" #我這裡的圖片是32x32的大小，ch.tetr.io/res/zenith-mods/的圖片是183x183的大小，這樣放在embed裡面比較好看
     icons = []
 
     SPECIAL_COMBOS = {
     "swamp_water": ['allspin', 'invisible', 'doublehole', 'volatile', 'gravity', 'messy', 'nohold', 'expert'],
     "emperors_decadence": ["expert", "doublehole", "nohold"],
-    "devine_mastery": ["expert", "doublehole", "volatile", "messy"],
+    "divine_mastery": ["expert", "doublehole", "volatile", "messy"],
     "the_con_artist": ["expert", "volatile", "allspin"],
     "the_escape_artist": ["doublehole", "messy", "allspin"],
     "deadlock": ["nohold", "doublehole", "messy"],
