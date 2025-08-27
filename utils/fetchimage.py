@@ -1,8 +1,9 @@
 from PIL import Image
-import requests
+import aiohttp
 from io import BytesIO
+import discord
 
-def merge_icons(mods):
+async def merge_icons(mods):
     base_url = "https://img.littlezhaidi.me/" #我這裡的圖片是32x32的大小，ch.tetr.io/res/zenith-mods/的圖片是183x183的大小，這樣放在embed裡面比較好看
     icons = []
 
@@ -32,27 +33,38 @@ def merge_icons(mods):
             break
     
     # 下載每個 mod 的圖標
-    for mod in mods:
-        response = requests.get(f"{base_url}{mod}.png")
-        if response.status_code == 200:
-            icons.append(Image.open(BytesIO(response.content)))
+    try:
+        async with aiohttp.ClientSession() as session:
+            for mod in mods:
+                async with session.get(f"{base_url}{mod}.png") as response:
+                    content = await response.read()
+                    icons.append(Image.open(BytesIO(content)))
 
-    # 計算合併後的圖片大小
-    width = sum(icon.width for icon in icons)
-    height = max(icon.height for icon in icons)
+        if not icons:
+            return None
+        if len(icons) == 1:
+            b = BytesIO()
+            icons[0].save(b, format="PNG")
+            b.seek(0)
+            return discord.File(b, filename="combined.png")
+        
+        width = sum(icon.width for icon in icons)
+        height = max(icon.height for icon in icons)
+        combined_image = Image.new("RGBA", (width, height))
 
-    # 建立空白圖片
-    combined_image = Image.new("RGBA", (width, height))
+        # 沿x軸合併圖片
+        x_offset = 0
+        for icon in icons:
+            combined_image.paste(icon, (x_offset, 0))
+            x_offset += icon.width
 
-    # 將每個圖標貼到空白圖片上
-    x_offset = 0
-    for icon in icons:
-        combined_image.paste(icon, (x_offset, 0))
-        x_offset += icon.width
-
-    # 儲存合併後的圖片
-    combined_image.save("combined.png")
-    print("已儲存合併後的圖片")
+        b = BytesIO()
+        combined_image.save(b, format="PNG")
+        b.seek(0)
+        return discord.File(b, filename="combined.png")
+    except Exception as e:
+        print("merge_icons", e)
+        return None
 
 # Example usage
 if __name__ == "__main__":

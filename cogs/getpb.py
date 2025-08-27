@@ -18,6 +18,7 @@ class Getpb(commands.Cog):
         record_url = f"https://ch.tetr.io/api/users/{username}/records/{gamemode}/top?limit=1"
         user_url = f"https://ch.tetr.io/api/users/{username}"
         await interaction.response.defer(thinking=True)
+
         record_data = await fetchdata(record_url, ignorecache=False)
         user_data = await fetchdata(user_url, ignorecache=False)
 
@@ -30,18 +31,18 @@ class Getpb(commands.Cog):
         if len(entries) == 0:
             await interaction.followup.send(f'欸你知道嗎，{username} 居然沒有玩過 {gamemode} 耶')
             return
-        #print("讀取資料中")
-        entries = record_data.get("data").get("entries")
-        embed = await create_embed(record_data, user_data, gamemode, username)
-        file = discord.File("combined.png", filename="combined.png")
-
-        if gamemode == "zenith":                                   #40l和blitz的extras是空的
-            if entries[0].get("extras").get("zenith").get("mods"): #所以要套兩層否則會出錯，暫時沒想到更好的解法 
-                await interaction.followup.send(embed=embed, file=file)
-                return
-            await interaction.followup.send(embed=embed)  #這好醜
-        else:
-            await interaction.followup.send(embed=embed)  
+        try:
+            embed, file = await create_embed(record_data, user_data, gamemode, username)
+            if gamemode == "zenith":                                   #40l和blitz的extras是空的
+                if entries[0].get("extras").get("zenith").get("mods"): #所以要套兩層否則會出錯，暫時沒想到更好的解法 
+                    embed.set_image(url="attachment://combined.png")
+                    await interaction.followup.send(embed=embed, file=file)
+                    return
+                await interaction.followup.send(embed=embed)
+            else:
+                await interaction.followup.send(embed=embed)  
+        except Exception as e:
+            print("getpb", e)
     
 async def setup(bot):
     await bot.add_cog(Getpb(bot))

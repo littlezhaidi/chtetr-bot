@@ -12,11 +12,13 @@ class SaveReplay(commands.Cog):
         interaction: discord.Interaction, 
         replayid: str
     ):
-        file = await save_replay(replayid)
-        if type(file) == int:
-            status = file
-            # 如果 file 是 int，表示發生了錯誤，status 會是 HTTP 狀態碼
-            if status == 404:
+        
+        try:
+            file = await save_replay(replayid)
+            await interaction.response.send_message(content="replay saved", file=file)
+        except Exception as e:
+            print(e)
+            if e == 404:
                 await interaction.response.send_message("我猜你複製了錯誤的replayid，或者這個replay早就被刪了")
                 return
             else:
@@ -24,14 +26,11 @@ class SaveReplay(commands.Cog):
                 error_message = (
                     f"API 發生異常狀況。\n"
                     f"Replay ID: {replayid}\n"
-                    f"HTTP 狀態碼: {status}\n"
+                    f"錯誤訊息: {e}\n"
                 )
                 chillythecat = await self.bot.fetch_user(803794851920478208)
                 await chillythecat.send(error_message)
                 return
-        else:
-            await interaction.response.send_message(content="replay saved", file=file)
-        
 
 async def setup(bot):
     await bot.add_cog(SaveReplay(bot))
