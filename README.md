@@ -24,4 +24,4 @@ tetra channel bot就是個我做來玩的機器人，
 
 
 
-https://img.littlezhaidi.me/40l.png
+![test-img](https://img.littlezhaidi.me/40l.png)
